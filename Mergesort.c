@@ -1,111 +1,30 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-
-void merge(int arr[], int l, int m, int r)
-{
-    int i, j, k;
-
-    int n1 = m - l + 1;
-    int n2 = r - m;
-
-    int *L = (int *)malloc(n1 * sizeof(int));
-    int *R = (int *)malloc(n2 * sizeof(int));
-
-    for (i = 0; i < n1; i++)
-        L[i] = arr[l + i];
-
-    for (j = 0; j < n2; j++)
-        R[j] = arr[m + 1 + j];
-
-    i = 0;
-    j = 0;
-    k = l;
-
-    while (i < n1 && j < n2)
-    {
-        if (L[i] <= R[j])
-            arr[k++] = L[i++];
-        else
-            arr[k++] = R[j++];
-    }
-
-    while (i < n1)
-        arr[k++] = L[i++];
-
-    while (j < n2)
-        arr[k++] = R[j++];
-
-    free(L);
-    free(R);
+#include <stdio.h> #include <time.h>
+void merge(int a[], int low, int mid, int high) { int temp[100000];
+int i = low, j = mid + 1, k = 0; while(i <= mid && j <= high) {
+if(a[i] < a[j]) temp[k++] = a[i++];
+else
+temp[k++] = a[j++];
 }
-
-void mergeSort(int arr[], int l, int r)
-{
-    if (l < r)
-    {
-        int m = (l + r) / 2;
-
-        mergeSort(arr, l, m);
-        mergeSort(arr, m + 1, r);
-
-        merge(arr, l, m, r);
-    }
+while(i <= mid) temp[k++] = a[i++];
+while(j <= high) temp[k++] = a[j++];
+for(i = low, k = 0; i <= high; i++, k++) a[i] = temp[k];
 }
-
-void bestCase(int arr[], int n)
-{
-    for (int i = 0; i < n; i++)
-        arr[i] = i;
+void mergeSort(int a[], int low, int high) { if(low < high) {
+int mid = (low + high) / 2; mergeSort(a, low, mid); mergeSort(a, mid + 1, high); merge(a, low, mid, high);
 }
-
-void worstCase(int arr[], int n)
-{
-    for (int i = 0; i < n; i++)
-        arr[i] = n - i;
 }
+int main() {
+int n, i, a[100000];
 
-int main()
-{
-    int n_values[] = {100, 200, 500, 1000, 2000, 5000};
-    int size = 6;
+ 
 
-    printf("\n\tBest Time\tWorst Time\n");
 
-    for (int k = 0; k < size; k++)
-    {
-        int n = n_values[k];
 
-        int *arr = (int *)malloc(n * sizeof(int));
-
-        clock_t start, end;
-
-        double best_time, worst_time;
-
-        bestCase(arr, n);
-
-        start = clock();
-
-        mergeSort(arr, 0, n - 1);
-
-        end = clock();
-
-        best_time = ((double)(end - start)) / CLOCKS_PER_SEC;
-
-        worstCase(arr, n);
-
-        start = clock();
-
-        mergeSort(arr, 0, n - 1);
-
-        end = clock();
-
-        worst_time = ((double)(end - start)) / CLOCKS_PER_SEC;
-
-        printf("%d\t%f\t%f\n", n, best_time, worst_time);
-
-        free(arr);
-    }
-
-    return 0;
+clock_t start, end; double time_taken;
+printf("Enter number of elements: "); scanf("%d", &n);
+printf("Enter elements:\n"); for(i = 0; i < n; i++)
+scanf("%d", &a[i]); start = clock(); mergeSort(a, 0, n - 1); end = clock();
+time_taken = ((double)(end - start)) / CLOCKS_PER_SEC; printf("Sorted elements are:\n");
+for(i = 0; i < n; i++) printf("%d ", a[i]);
+printf("\nTime taken = %f seconds\n", time_taken); return 0;
 }
